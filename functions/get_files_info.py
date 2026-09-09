@@ -1,0 +1,40 @@
+import os
+
+# Schema for the LLM to call this function
+schema_get_files_info = {
+    "type": "function",
+    "function": {
+        "name": "get_files_info",
+        "description": "Lists files and directories. Use this only when the user wants to see the contents of a directory.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "directory": {
+                    "type": "string",
+                    "description": "Directory path to list files from, relative to the working directory (default is the working directory itself)",
+                },
+            },
+        },
+    },
+}
+
+
+def get_files_info(working_directory: str, directory: str = ".") -> str:
+    # ... (the implementation from before, unchanged)
+    try:
+        working_dir_abs = os.path.abspath(working_directory)
+        target_dir = os.path.normpath(os.path.join(working_dir_abs, directory))
+        if os.path.commonpath([working_dir_abs, target_dir]) != working_dir_abs:
+            return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
+        if not os.path.isdir(target_dir):
+            return f'Error: "{directory}" is not a directory'
+        entries = []
+        for item in os.listdir(target_dir):
+            item_path = os.path.join(target_dir, item)
+            size = os.path.getsize(item_path)
+            is_dir = os.path.isdir(item_path)
+            entries.append(f"- {item}: file_size={size} bytes, is_dir={is_dir}")
+        entries.sort()
+        return "\n".join(entries)
+    except Exception as e:
+        return f'Error: {str(e)}'
