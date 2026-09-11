@@ -30,7 +30,6 @@ def main():
         {"role": "user", "content": args.user_prompt},
     ]
 
-    # Agent loop: maximum 20 iterations
     for iteration in range(20):
         if args.verbose:
             print(f"\n--- Iteration {iteration + 1} ---")
@@ -49,24 +48,18 @@ def main():
             print(f"Prompt tokens: {response.usage.prompt_tokens}")
             print(f"Response tokens: {response.usage.completion_tokens}")
 
-        # Get the assistant's message and add it to the conversation history
         message = response.choices[0].message
-        messages.append(message)  # stores the assistant's turn
+        messages.append(message)
 
-        # Check if the model requested tool calls
         if message.tool_calls:
             for tool_call in message.tool_calls:
-                # Execute the tool and get a tool message
                 tool_result = call_function(tool_call, verbose=args.verbose)
                 messages.append(tool_result)
-            # Continue the loop so the model sees the tool results
             continue
-        else:
-            # No tool calls – this is the final answer
-            print(message.content)
-            return  # exit successfully
 
-    # If we exit the loop without a final answer
+        print(message.content)
+        return
+
     print("Error: Maximum iterations (20) reached without a final response.")
     sys.exit(1)
 

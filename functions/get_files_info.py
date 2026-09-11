@@ -1,6 +1,5 @@
 import os
 
-# Schema for the LLM to call this function
 schema_get_files_info = {
     "type": "function",
     "function": {
@@ -20,7 +19,6 @@ schema_get_files_info = {
 
 
 def get_files_info(working_directory: str, directory: str = ".") -> str:
-    # ... (the implementation from before, unchanged)
     try:
         working_dir_abs = os.path.abspath(working_directory)
         target_dir = os.path.normpath(os.path.join(working_dir_abs, directory))

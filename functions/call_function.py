@@ -6,7 +6,6 @@ from functions.get_file_content import get_file_content
 from functions.write_file import write_file
 from functions.run_python_file import run_python_file
 
-# Map function names (as defined in schemas) to their implementations
 function_map: dict[str, Callable[..., str]] = {
     "get_files_info": get_files_info,
     "get_file_content": get_file_content,
@@ -34,7 +33,6 @@ def call_function(tool_call, verbose: bool = False) -> dict:
             "content": f"Error: Unknown function: {function_name}",
         }
 
-    # Inject the working directory (the LLM never sees this)
     function_args["working_directory"] = "./calculator"
 
     try:

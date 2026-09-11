@@ -32,37 +32,30 @@ def run_python_file(
     Returns the combined stdout/stderr output or an error message.
     """
     try:
-        # Resolve paths
         working_dir_abs = os.path.abspath(working_directory)
         target_file = os.path.normpath(os.path.join(working_dir_abs, file_path))
 
-        # Validate that target is inside working directory
         if os.path.commonpath([working_dir_abs, target_file]) != working_dir_abs:
             return f'Error: Cannot execute "{file_path}" as it is outside the permitted working directory'
 
-        # Check existence and that it's a regular file
         if not os.path.isfile(target_file):
             return f'Error: "{file_path}" does not exist or is not a regular file'
 
-        # Check file extension
         if not target_file.endswith('.py'):
             return f'Error: "{file_path}" is not a Python file'
 
-        # Build command
         command = ["python", target_file]
         if args:
             command.extend(args)
 
-        # Run the subprocess with timeout and output capture
         result = subprocess.run(
             command,
-            cwd=working_dir_abs,          # ensure we're in the working directory
+            cwd=working_dir_abs,
             capture_output=True,
             text=True,
             timeout=30
         )
 
-        # Assemble output string
         output_parts = []
         if result.returncode != 0:
             output_parts.append(f"Process exited with code {result.returncode}")

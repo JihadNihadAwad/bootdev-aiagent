@@ -1,7 +1,6 @@
 from functions.run_python_file import run_python_file
 
 def main():
-    # Test cases as specified
     print("1.", run_python_file("calculator", "main.py"))
     print("2.", run_python_file("calculator", "main.py", ["3 + 5"]))
     print("3.", run_python_file("calculator", "tests.py"))
